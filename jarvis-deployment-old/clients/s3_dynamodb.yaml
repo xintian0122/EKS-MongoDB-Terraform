@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS CloudFormation Template to create S3 bucket and DynamoDB table for Terraform state storage'
+
+Parameters:
+  BucketNamePrefix:
+    Type: String
+    Description: 'S3 bucket name prefix for Terraform state storage'
+    Default: 'jarvis'
+
+Resources:
+  TerraformStateBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub '${BucketNamePrefix}-terraform-states'
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  TerraformLockTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: 'terraform-locks'
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+Outputs:
+  S3BucketName:
+    Description: 'Name of the S3 bucket for Terraform state'
+    Value: !Ref TerraformStateBucket
+  DynamoDBTableName:
+    Description: 'Name of the DynamoDB table for Terraform state locking'
+    Value: !Ref TerraformLockTable

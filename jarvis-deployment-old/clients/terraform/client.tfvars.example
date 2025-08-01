@@ -1,0 +1,15 @@
+env = "dev"
+region  = "<REGION>"     # 
+application_name  = "CLIENT-jarvis"
+availability_zones=["AZ1", "AZ2"]
+capacity_type = "ON_DEMAND"
+cluster_version = "1.33"
+kms_key_owners = ["arn:aws:iam::ACCOUNTID:role/Ascending-administrator-role"]   # This the role for eks kms key, replace with the role you're using. Add client role if required
+eks_admin_user_arn = "arn:aws:iam::ACCOUNTID:role/Ascending-administrator-role" # This is the eks admin role, replace with the role you're using. If client need eks access, add in the console afterwards
+eks_EBS_CSI_DriverRole= ""  # REPLACE 
+eks_cloudwatch_role_arn = ""  # REPLACE 
+helm_values_file = "clients_values/CLIENT/CLIENT_values.yaml"
+helm_chart_version = "0.1.5"
+jarvis_domain_name = ""
+cloudfront_alb = ""
+cloudfront_cert_arn = ""

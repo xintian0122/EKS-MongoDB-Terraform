@@ -1,0 +1,232 @@
+# Default values for ascending-jarvis.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global settings
+global:
+  environment: production  # or staging, development, etc.
+
+# External Secrets settings
+external-secrets:
+  install: false
+
+# Jarvis main application
+jarvis:
+  image:
+    repository: 595312265488.dkr.ecr.us-east-1.amazonaws.com/askcto_librechat_api
+  env:
+    remoteRef: librechat-askcto/env 
+    keys:
+      - HOST
+      - PORT
+      - DOMAIN_CLIENT
+      - DOMAIN_SERVER
+      - NO_INDEX
+      - CONSOLE_JSON
+      - DEBUG_LOGGING
+      - DEBUG_CONSOLE
+      - SEARCH
+      - MEILI_NO_ANALYTICS
+      - MEILI_HOST
+      - DEBUG_PLUGINS
+      - ALLOW_EMAIL_LOGIN
+      - ALLOW_REGISTRATION
+      - ALLOW_SOCIAL_LOGIN
+      - ALLOW_SOCIAL_REGISTRATION
+      - ALLOW_PASSWORD_RESET
+      - ALLOW_ACCOUNT_DELETION
+      - ALLOW_UNVERIFIED_EMAIL_LOGIN
+      - ALLOW_SHARED_LINKS
+      - ALLOW_SHARED_LINKS_PUBLIC
+      - RAG_PORT
+      - RAG_API_URL
+      - HELP_AND_FAQ_URL
+      - EMAIL_SERVICE
+      - EMAIL_HOST
+      - EMAIL_PORT
+      - EMAIL_ENCRYPTION
+      - EMAIL_USERNAME
+      - EMAIL_PASSWORD
+      - EMAIL_FROM_NAME
+      - EMAIL_FROM
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - GOOGLE_CALLBACK_URL
+      - ENDPOINTS
+      - MONGO_URI
+      - CREDS_KEY
+      - CREDS_IV
+      - JWT_SECRET
+      - JWT_REFRESH_SECRET
+      - DB_HOST
+      - OPENAI_API_KEY
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - ANALYTICS_GTM_ID
+      - CUSTOM_FOOTER
+      - APP_TITLE   
+      - Q_BUSINESS_API_BASE_URL
+      - AWS_BUCKET_NAME 
+  
+  # ConfigMap settings
+  config:
+    # Configuration version (required)
+    version: 1.2.4
+
+    # Cache settings: Set to true to enable caching
+
+    cache: true
+
+    # File strategy s3/firebase
+    fileStrategy: "s3"
+    filteredTools:
+      - "traversaal_search"
+      - "web-browser"
+      - "serpapi"
+      - "tavily_search_results_json"
+      - "calculator"
+      - "azure-ai-search"
+      - "open_weather"
+      - "flux"
+
+    # Custom interface configuration
+    interface:
+      # Privacy policy settings
+      privacyPolicy:
+        externalUrl: 'https://app.termly.io/policy-viewer/policy.html?policyUUID=0c91586e-1d8d-489e-83af-70b343467a34'
+        openNewTab: true
+
+      # Terms of service
+      termsOfService:
+        externalUrl: 'https://app.termly.io/policy-viewer/policy.html?policyUUID=c5f9adb5-4979-4c41-81de-904f87321a4e'
+        openNewTab: true
+        modalAcceptance: true
+        modalTitle: "Terms of Service for AskCTO"
+        modalContent: |
+
+          ## 1. Introduction
+      
+          Welcome to AskCTO ("the Tool"), a free AI-powered assistant designed to help small businesses and startups navigate AWS cloud technologies. By accessing and using AskCTO, you agree to these Terms and Conditions ("Terms"). If you do not agree, please refrain from using the Tool.
+
+          ## 2. Use of AskCTO
+          
+          AskCTO is provided as a free resource to help SMBs and startups understand AWS best practices, security compliance, migration, and cost optimization.
+          Users may submit inquiries and receive AI-generated responses based on AWS knowledge and best practices.
+          While we strive for accuracy, AskCTO is an informational tool and should not be considered a substitute for professional consulting services.
+          
+          ## 3. Data Collection and Usage
+          
+          By using AskCTO, you acknowledge that we may collect and store non-sensitive information related to your AWS needs and inquiries.
+          This data may be used to improve the tool and to offer personalized follow-up assistance regarding AWS solutions.
+          We may contact you via email or phone to provide additional guidance, offer AWS-related services, or discuss potential collaboration opportunities.
+          
+          ## 4. No Warranty & Limitation of Liability
+          
+          AskCTO is provided "as is" without warranties of any kind, including accuracy, reliability, or fitness for a particular purpose.
+          We are not responsible for any decisions, implementations, or outcomes based on the information provided by AskCTO.
+          Under no circumstances shall we be liable for any direct, indirect, incidental, or consequential damages arising from the use of the Tool.
+          
+          ## 5. Privacy & Data Protection
+          
+          We respect user privacy and handle collected data in accordance with applicable laws.
+          We do not sell or share user data with third parties outside of our AWS consulting and service offerings.
+          Users may request data deletion by contacting us at support@ascendingdc.com
+          
+          ## 6. Changes to These Terms
+          
+          We reserve the right to update these Terms at any time. Continued use of AskCTO after changes take effect constitutes acceptance of the revised Terms.
+          
+          ## 7. Contact Information
+          
+          For questions or concerns regarding these Terms, please contact us at:
+          📧 support@ascendingdc.com
+
+      modelSelect: true
+      parameters: true
+      sidePanel: true
+      presets: false
+      prompts: false
+      bookmarks: true
+      multiConvo: false
+      agents: true
+      runCode: false
+
+    # Definition of custom endpoints
+    endpoints:
+      custom:
+        - name: "AskCTO"
+          apiKey: "CTO_API_KEY"
+          baseURL: "http://q-business-api:8080/v1/chat/completions"
+          iconURL: "https://cto.ascendingdc.com/assets/logo.svg"
+          models:
+            default: ["cto"]
+          userIdQuery: true
+          titleConvo: true
+          titleModel: "current_model"
+          summarize: false
+          forcePrompt: false
+          directEndpoint: true
+          modelDisplayLabel: "CTO"
+          buildInRag: true 
+    fileConfig:
+      endpoints:
+        default:
+          fileSizeLimit: 5
+          fileLimit: 5
+          totalSizeLimit: 25
+        AskCTO:
+          fileLimit: 5
+          fileSizeLimit: 45
+          totalSizeLimit: 200
+      avatarSizeLimit: 2  # Limit for user avatar image size in MB
+
+
+
+# RAG API configuration
+ragApi:
+  env:
+    remoteRef: librechat-askcto/env        # The key in AWS Secrets Manager
+
+mongodb:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+meilisearch:
+  masterKey: "DrhYf7zENyR6AlUCKmnz0eYASOQdl6zxH7s7MKFSfFCt"
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+qBusinessApi:
+  enabled: true
+  image:
+    repository: 595312265488.dkr.ecr.us-east-1.amazonaws.com/askcto_qbusiness_api
+
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: alb-askcto
+  annotations:
+    alb.ingress.kubernetes.io/subnets: 'subnet-067be2228f9f617b6, subnet-031ee61e22c86106d'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:595312265488:certificate/00cc2fcb-7f4d-4a7c-850e-4a7038c18602
+  hosts:
+    - host: cto.ascendingdc.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service: jarvis-api-service
+            port: 3080
+
+# Service accounts
+serviceAccounts:
+  jarvis:
+    create: true
+    name: librechat-service-account
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::595312265488:role/askcto-librechat-api-role"
+  qBusiness:
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::595312265488:role/askcto-q-business-api-role"

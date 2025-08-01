@@ -1,0 +1,145 @@
+# Default values for ascending-jarvis.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global settings
+global:
+  environment: production  # or staging, development, etc.
+
+
+
+# External Secrets settings
+external-secrets:
+  install: false
+
+# Jarvis main application
+jarvis:
+  image:
+    repository: 897729109735.dkr.ecr.us-east-1.amazonaws.com/ascending-jarvis_librechat_api
+  env:
+    remoteRef: ascending-jarvis/jarvis-env         # The key in AWS Secrets Manager
+    keys:
+      - ALLOW_SHARED_LINKS
+  
+  # ConfigMap settings
+  config:
+    version: 1.2.4
+    cache: true
+    fileStrategy: "s3"
+    filteredTools:
+      - "traversaal_search"
+      - "web-browser"
+      - "serpapi"
+      - "tavily_search_results_json"
+      - "calculator"
+      - "azure-ai-search"
+      - "open_weather"
+      - "flux"
+    interface:
+      # Privacy policy settings
+      privacyPolicy:
+        externalUrl: 'https://app.termly.io/policy-viewer/policy.html?policyUUID=0c91586e-1d8d-489e-83af-70b343467a34'
+        openNewTab: true
+
+      # Terms of service
+      termsOfService:
+        externalUrl: 'https://app.termly.io/policy-viewer/policy.html?policyUUID=c5f9adb5-4979-4c41-81de-904f87321a4e'
+        openNewTab: true
+        modalAcceptance: true
+        modalTitle: "Terms of Service for ASCENDING Jarvis"
+        modalContent: |
+          
+          ## 1. Internal use
+          ASCENDING Internal tools, we encourage you report any bugs or feedback
+
+      endpointsMenu: true
+      modelSelect: true
+      parameters: true
+      sidePanel: true
+      presets: true
+      prompts: true
+      bookmarks: true
+      multiConvo: true
+      agents: true
+      runCode: false
+    endpoints:
+      custom:
+        - name: "Deepseek"
+          apiKey: "${DEEPSEEK_API_KEY}"
+          baseURL: "https://api.deepseek.com/v1"
+          models:
+            default: ["deepseek-chat", "deepseek-coder", "deepseek-reasoner"]
+            fetch: false
+          titleConvo: true
+          titleModel: "deepseek-chat"
+          modelDisplayLabel: "Deepseek"
+      bedrock:
+        availableRegions:
+          - "us-east-1"
+        streamRate: 35
+        titleConvo: true
+        titleModel: "current_model"
+      agents:
+        recursionLimit: 50
+        maxRecursionLimit: 100
+        disableBuilder: false  
+        capabilities: 
+          - "file_search"
+          - "actions"
+          - "tools"
+          - "artifacts"
+          - "ocr"
+          - "chain"
+    fileConfig:
+      endpoints:
+        default:
+          fileSizeLimit: 5
+          fileLimit: 5
+          totalSizeLimit: 25
+      avatarSizeLimit: 2  # Limit for user avatar image size in MB
+
+
+# RAG API configuration
+ragApi:
+  env:
+    remoteRef: ascending-jarvis/jarvis-env        # The key in AWS Secrets Manager
+
+mongodb:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+meilisearch:
+  masterKey: "DrhYf7zENyR6AlUCKmnz0eYASOQdl6zxH7s7MKFSfFCt"
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+guardrailsApi:
+  enabled: true
+  image:
+    repository: 897729109735.dkr.ecr.us-east-1.amazonaws.com/ascending-jarvis_guardrail_api
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: aws-load-balancer-test
+  annotations:
+    alb.ingress.kubernetes.io/subnets: 'subnet-098a5953f1f289823, subnet-060141215e7e34932'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:897729109735:certificate/718b77c4-6dda-4d08-bdfb-e0b23e485c92
+  hosts:
+    - host: jarvis.ascendingdc.com
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service: jarvis-api-service
+            port: 3080
+
+# Service accounts
+serviceAccounts:
+  jarvis:
+    create: true
+    name: jarvis-service-account
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::897729109735:role/jarvis-api-role"
+  qBusiness:
+    create: false

@@ -1,0 +1,4 @@
+bucket         = "<BucketNamePrefix>-terraform-states"
+key            = "<BucketNamePrefix>/tfstate"
+region         = "<REGION>"  
+dynamodb_table = "terraform-locks"

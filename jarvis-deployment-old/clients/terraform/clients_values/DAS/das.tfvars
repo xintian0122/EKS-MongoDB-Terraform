@@ -1,0 +1,16 @@
+env = "dev"
+region  = "us-west-2"
+application_name  = "das-jarvis"
+availability_zones=["us-west-2a", "us-west-2b"]
+capacity_type = "ON_DEMAND"
+cluster_version = "1.32"
+kms_key_owners = ["arn:aws:iam::570277181188:role/Ascending-administrator-role"]
+eks_admin_user_arn = "arn:aws:iam::570277181188:role/Ascending-administrator-role"
+eks_EBS_CSI_DriverRole= "arn:aws:iam::570277181188:role/AmazonEKS_EBS_CSI_DriverRole"
+eks_cloudwatch_role_arn = "arn:aws:iam::570277181188:role/AmazonEKS_Observability_Role"
+eks_node_instance_types = ["c6a.2xlarge", "c5.2xlarge", "c7a.2xlarge"]
+jarvis_values_file = "clients_values/DAS/das_values.yaml"
+helm_chart_version = "0.1.5"
+jarvis_domain_name = "aipoc.digitalairstrike.dev"
+cloudfront_alb = "k8s-group-a18fff948f-788432165.us-west-2.elb.amazonaws.com"
+cloudfront_cert_arn = "arn:aws:acm:us-east-1:570277181188:certificate/5c0ecbee-8e5d-4407-908b-aa78eea98ef7"

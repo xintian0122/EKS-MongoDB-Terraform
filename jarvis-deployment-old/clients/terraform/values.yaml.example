@@ -1,0 +1,265 @@
+# Default values for ascending-jarvis.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global settings
+global:
+  environment: production  # or staging, development, etc.
+
+
+# External Secrets settings
+external-secrets:
+  install: false
+
+# Jarvis main application
+jarvis:
+  image:
+    repository: 897729109735.dkr.ecr.us-east-1.amazonaws.com/ascending-jarvis_jarvis_api
+    tag: asc0.0.3                                  # Replace with specific tag
+  env:
+    remoteRef: <CLIENT>-jarvis/jarvis-env         # Replace with the secrete name created in AWS Secrets Manager
+    keys:
+      - ALLOW_SHARED_LINKS                         # Update the keys to match the keys in AWS Secrets Manager
+      - ALLOW_SHARED_LINKS_PUBLIC
+      - CONSOLE_JSON
+      - DEBUG_CONSOLE
+      - DEBUG_LOGGING
+      - DEBUG_PLUGINS
+      - DOMAIN_CLIENT
+      - DOMAIN_SERVER
+      - EMAIL_ENCRYPTION
+      - EMAIL_FROM
+      - EMAIL_FROM_NAME
+      - EMAIL_HOST
+      - EMAIL_PASSWORD
+      - EMAIL_PORT
+      - EMAIL_SERVICE
+      - EMAIL_USERNAME
+      - ENDPOINTS
+      - GOOGLE_CALLBACK_URL
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - HOST
+      - MEILI_HOST
+      - MEILI_NO_ANALYTICS
+      - NO_INDEX
+      - PORT
+      - RAG_API_URL
+      - RAG_PORT
+      - SEARCH
+      - MONGO_URI
+      - AWS_BUCKET_NAME
+      - DB_HOST
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - ANALYTICS_GTM_ID
+      - OPENAI_API_KEY
+      - OPENAI_MODELS
+      - OPENAI_SUMMARIZE
+      - OPENAI_SUMMARY_MODEL
+      - OPENAI_ORGANIZATION
+      - CREDS_KEY
+      - CREDS_IV
+      - OPENID_CLIENT_ID
+      - OPENID_CLIENT_SECRET
+      - OPENID_ISSUER
+      - OPENID_SESSION_SECRET
+      - OPENID_SCOPE
+      - OPENID_CALLBACK_URL
+      - OPENID_REQUIRED_ROLE_TOKEN_KIND
+      - OPENID_USERNAME_CLAIM
+      - OPENID_BUTTON_LABEL
+      - OPENID_IMAGE_URL
+      - RAG_OPENAI_API_KEY
+      - RAG_USE_FULL_CONTEXT
+      - ALLOW_EMAIL_LOGIN
+      - ALLOW_REGISTRATION
+      - ALLOW_SOCIAL_LOGIN
+      - ALLOW_SOCIAL_REGISTRATION
+      - ALLOW_PASSWORD_RESET
+      - ALLOW_ACCOUNT_DELETION
+      - ALLOW_UNVERIFIED_EMAIL_LOGIN
+      - MEILI_MASTER_KEY
+      - JWT_SECRET
+      - JWT_REFRESH_SECRET
+      - APP_TITLE
+      - CUSTOM_FOOTER
+      - HELP_AND_FAQ_URL
+      - OPENID_NAME_CLAIM
+      - BEDROCK_AWS_DEFAULT_REGION
+      - BEDROCK_AWS_MODELS
+      - OPENAI_TITLE_MODEL
+      - TITLE_CONVO
+      - GOOGLE_SEARCH_API_KEY
+      - GOOGLE_CSE_ID
+      - ANTHROPIC_API_KEY
+      - ANTHROPIC_MODELS
+      - ANTHROPIC_TITLE_MODEL
+      - AI_MODERATION
+      - AI_MODERATION_API_URL
+      - BEDROCK_AWS_KB_ID
+      - WEAVIATE_HOST
+      - WEAVIATE_PORT
+      - AUTHENTICATION_APIKEY_ENABLED
+      - AUTHENTICATION_APIKEY_ALLOWED_KEYS
+      - AUTHENTICATION_APIKEY_USERS
+      - AUTHORIZATION_ADMINLIST_ENABLED
+      - AUTHORIZATION_ADMINLIST_USERS
+      - AUTHORIZATION_ADMINLIST_READONLY_USERS
+      - WEAVIATE_HOSTNAME
+      - ENABLE_MODULES
+      - IMAGE_INFERENCE_API
+      - CLIP_INFERENCE_API
+      - CLUSTER_HOSTNAME
+      - PERSISTENCE_DATA_PATH
+      - QUERY_DEFAULTS_LIMIT
+      - QUERY_MAXIMUM_RESULTS
+      - LOG_LEVEL
+      - OPENAI_APIKEY
+      - RAG_EMBEDDINGS_PROVIDER
+      - RAG_EMBEDDINGS_MODEL
+      - RAG_EMBEDDINGS_MODEL_VERSION
+      - DALLE3_API_KEY
+      - OPENID_REUSE_TOKENS
+      - SESSION_EXPIRY
+      - REFRESH_TOKEN_EXPIRY
+      - REDIS_HOST
+      - REDIS_PORT
+
+  # ConfigMap settings, ask Ryo for specification
+  config:
+    version: 1.2.4
+    cache: true
+    fileStrategy: "s3"
+    filteredTools:
+      - "traversaal_search"
+      - "web-browser"
+      - "serpapi"
+      - "tavily_search_results_json"
+      - "calculator"
+      - "azure-ai-search"
+      - "open_weather"
+      - "flux"
+    interface:
+      # Privacy policy settings
+      privacyPolicy:
+        externalUrl: 'https://app.termly.io/policy-viewer/policy.html?policyUUID=0c91586e-1d8d-489e-83af-70b343467a34'
+        openNewTab: true
+
+      # Terms of service
+      termsOfService:
+        externalUrl: 'https://app.termly.io/policy-viewer/policy.html?policyUUID=c5f9adb5-4979-4c41-81de-904f87321a4e'
+        openNewTab: true
+        modalAcceptance: true
+        modalTitle: "Terms of Service for ASCENDING Jarvis"
+        modalContent: |
+          
+          ## 1. Internal use
+          ASCENDING Internal tools, we encourage you report any bugs or feedback
+
+      endpointsMenu: true
+      modelSelect: true
+      parameters: true
+      sidePanel: true
+      presets: true
+      prompts: true
+      bookmarks: true
+      multiConvo: true
+      agents: true
+      runCode: false
+    endpoints:
+      agents:
+        recursionLimit: 50
+        maxRecursionLimit: 100
+        disableBuilder: false  
+        capabilities: 
+          - "file_search"
+          - "actions"
+          - "tools"
+          - "artifacts"
+          - "ocr"
+          - "chain"
+    fileConfig:
+      endpoints:
+        default:
+          fileSizeLimit: 5
+          fileLimit: 5
+          totalSizeLimit: 25
+      avatarSizeLimit: 2  # Limit for user avatar image size in MB
+
+
+# RAG API configuration
+ragApi:
+  enabled: true
+  image:
+    repository: 897729109735.dkr.ecr.us-east-1.amazonaws.com/ascending-jarvis_llama_index
+    tag: latest                     # Change the tag if needed, keep it consistent with the celery image tag if cerlery enabled
+  service:
+    port: 8000
+
+LlamaIndex:
+  weaviate:
+    create: true
+    nodeSelector:
+      eks.amazonaws.com/capacityType: ON_DEMAND
+  multi2vecClip:
+    create: true
+    nodeSelector:
+      eks.amazonaws.com/capacityType: ON_DEMAND
+  redis:
+    create: true                  # Set to false if not needed
+  celery:
+    create: true                  # Set to false if not needed
+    image:
+      tag: latest                 # Change the tag if needed, keep it consistent with the ragApi image tag     
+
+mongodb:
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+meilisearch:
+  masterKey: "DrhYf7zENyR6AlUCKmnz0eYASOQdl6zxH7s7MKFSfFCt"      # Replace with the generated Meilisearch master key
+  nodeSelector:
+    eks.amazonaws.com/capacityType: ON_DEMAND
+
+guardrailsApi:
+  enabled: false                              # Set to true if needed
+  image:
+    repository: 897729109735.dkr.ecr.us-east-1.amazonaws.com/ascending-jarvis_guardrail_api
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: aws-load-balancer
+  annotations:
+    alb.ingress.kubernetes.io/subnets: 'subnet-098a5953f1f289823, subnet-060141215e7e34932'       # Public subnet ID created for Jarvis
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:897729109735:certificate/718b77c4-6dda-4d08-bdfb-e0b23e485c92   # Change to the cert arn of the region you want to deploy
+  hosts:
+    - host: <clinet.domain>         # Replace with the client domain
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service: jarvis-api-service
+            port: 3080
+
+# Service accounts
+serviceAccounts:
+  jarvis:
+    create: true
+    name: jarvis-service-account
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::ACCOUNT:role/jarvis-api-role"    # Change to the IAM created in the client account
+  qBusiness:
+    create: false
+
+# Secret Store configuration
+secretStore:
+  aws:
+    region: <REGION>                # Change to your desired AWS region
+
+# storageClass configuration
+storageClass:
+  create: true
+  name: ebs-sc

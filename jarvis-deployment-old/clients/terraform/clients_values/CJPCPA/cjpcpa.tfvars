@@ -1,0 +1,15 @@
+env = "dev"
+region  = "us-west-2"     # 
+application_name  = "cjpcpa-jarvis"
+availability_zones=["us-west-2a", "us-west-2b"]
+capacity_type = "ON_DEMAND"
+cluster_version = "1.33"
+kms_key_owners = ["arn:aws:iam::325169458439:role/Ascending-administrator-role"]   # This the role for eks kms key, replace with the role you're using. Add client role if required
+eks_admin_user_arn = "arn:aws:iam::325169458439:role/Ascending-administrator-role" # This is the eks admin role, replace with the role you're using. If client need eks access, add in the console afterwards
+eks_EBS_CSI_DriverRole= "arn:aws:iam::325169458439:role/AmazonEKS_EBS_CSI_DriverRole"  # REPLACE 
+eks_cloudwatch_role_arn = "arn:aws:iam::325169458439:role/AmazonEKS_Observability_Role"  # REPLACE 
+jarvis_values_file = "clients_values/CJPCPA/cjpcpa_values.yaml"
+helm_chart_version = "0.1.5"
+jarvis_domain_name = "ai-covelljanipaschcpas.com"
+cloudfront_alb = "k8s-group-a8b28ff8d2-918375246.us-west-2.elb.amazonaws.com"
+cloudfront_cert_arn = "arn:aws:acm:us-east-1:325169458439:certificate/915b5362-437a-4703-a943-9de2149a85ed"
