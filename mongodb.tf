@@ -19,8 +19,6 @@ provider "kubernetes" {
 }
 
 
-
-
 # secret for MongoDB Credentials
 
 resource "kubernetes_secret" "mongodb_secret" {
