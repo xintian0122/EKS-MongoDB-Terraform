@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Pod
-metadata:
-  name: mssql-client
-spec:
-  containers:
-  - name: mssql-client
-    image: mcr.microsoft.com/mssql-tools
-    command: [ "sleep", "infinity" ] # Keeps the pod running
