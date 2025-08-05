@@ -1,2 +1,2 @@
-import pandas as pandas
+import pandas
 
